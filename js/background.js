@@ -7,7 +7,11 @@ class Background {
         this.img = new Image()
         this.img.src = 'assets/backgroung.jpg'
         // this.dx = worldVelocity
+
+    
     }
+
+   
     draw() {
         this.ctx.drawImage(this.img,this.x,0, this.canvasW, this.canvasH)
         this.ctx.drawImage(
@@ -19,6 +23,9 @@ class Background {
         )
     }
     move(worldVelocity) {
+
+
+
         this.x += worldVelocity
         if (this.x <= -this.canvasW) this.x = 0
     }

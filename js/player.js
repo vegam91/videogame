@@ -6,11 +6,12 @@ class Player {
 		this.canvasW = canvasW
 		this.canvasH = canvasH
 
-		this.x = canvasW * 0.00
+		this.x = canvasW * 0.09
 
 		this.y0 = canvasH * 0.7 
 		this.y = this.y0
 
+		this.vx = 0
 		this.vy = 0.7
 
 		this.img = new Image()
@@ -19,18 +20,15 @@ class Player {
 		this.img.frameCount = 3
 		this.frameIndex = 0
 
-		this.width = 130
-		this.height = 120
-
-		// this.bullets = []
-
-		// this.jumpAudio = new Audio('../assets/sounds/jump.wav')
-		// this.jumpAudio.volume = 1
-
-		// this.bulletAudio = new Audio('../assets/sounds/bullet.wav')
-		// this.bulletAudio.volume = 1
-
+		this.width = 140
+		this.height = 140
+		this.isStuned = false
+		this.isCollision = false
+		this.worldVelocity = undefined
+		// setTimeout(() => this.vx = -10, 10000)
 		this.setControls()
+
+		this.vx = 4
 	}
 
 	setControls() {
@@ -38,20 +36,29 @@ class Player {
 			switch (event.code) {
 				case this.keys.JUMP:
 					if (this.y === this.y0) {
-						this.jumpAudio.play()
-						this.vy = -15
+						// this.jumpAudio.play()
+						this.vy = -20
 					}
-					break
-				case this.keys.SHOOT:
-					this.shoot()
-					this.bulletAudio.play()
-					break
+				
 			}
 		})
 	}
 
+	stuned(worldVelocity) {
+		this.worldVelocity = worldVelocity
+
+		if(!this.isCollision) {
+
+			this.isCollision = true
+			this.isStuned = true
+
+			setTimeout(() => this.isStuned = false, 500)
+		} 
+	}
+
 	draw(frameCounter) {
-		// Pintamos un cada frame del sprite en función del frameIndex
+	
+		
 		this.ctx.drawImage(
 			this.img,
 
@@ -66,20 +73,14 @@ class Player {
 			this.height
 		)
 
-		// this.bullets.forEach((bullet) => {
-		// 	bullet.draw()
-		// 	bullet.move()
-		// })
-
-		// this.bullets = this.bullets.filter(
-		// 	(bullet) => bullet.x - bullet.radius < this.canvasW
-		// )
-		// // console.log(this.bullets)
 		this.animateSprite(frameCounter)
 	}
 
-	// Cambiamos cada 6 frames del juego el frameIndex del sprite para que dibuje el personaje con otra pose
+	
 	animateSprite(frameCounter) {
+
+		
+
 		if (frameCounter % 6 === 0) {
 			this.frameIndex++
 		}
@@ -87,31 +88,40 @@ class Player {
 		if (this.frameIndex >= this.img.frameCount) this.frameIndex = 0
 	}
 
-	// shoot() {
-	// 	this.bullets.push(
-	// 		new Bullet(
-	// 			this.ctx,
-	// 			this.width,
-	// 			this.height,
-	// 			this.x,
-	// 			this.y,
-	// 			this.y0,
-	// 			this.canvasW,
-	// 			this.canvasH
-	// 		)
-	// 	)
-	// }
+	
 
 	move() {
+
+		if(this.isStuned && !this.worldVelocity) {
+			this.vx = 2
+		} else if(!this.isStuned && !this.worldVelocity) {
+			this.vx = 4
+		}
+
+
 		this.gravity = 0.95
 		this.vy += this.gravity
 		this.y += this.vy
-
+		this.x += this.vx
 		if (this.y >= this.y0) {
 			this.vy = 0
 			this.y = this.y0
 		}
+
+
+
+		
+
+
 	}
+
+
+
+
+
+
 }
+
+
 
 export default Player

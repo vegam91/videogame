@@ -1,26 +1,30 @@
-class Cat{
-	constructor(ctx, canvasW, canvasH, keys) {
+class Monkey {
+	constructor(ctx, canvasW, canvasH) {
 		this.ctx = ctx
-		this.keys = keys
+	
 
 		this.canvasW = canvasW
 		this.canvasH = canvasH
 
-		this.x = canvasW * 0.80
+		this.x = canvasW * 0.6
 
-		this.y0 = canvasH * 0.7 
+		this.y0 = canvasH * 0.6 
 		this.y = this.y0
 
-		this.vy = 0.7
+		this.vy = 0.3
 
 		this.img = new Image()
-		this.img.src = 'assets/cat.png'
+        this.img.src = 'assets/monkey.png'
+        this.img.frameCount = 11
+        this.img.frameIndex = 10
 
-		this.img.frameCount = 3
-		this.frameIndex = 0
+		this.width = 366.6
+		this.height = 183.3
 
-		this.width = 120
-		this.height = 120
+
+        this.actions = {
+            shoot: true
+        }
     }
 
 
@@ -29,10 +33,13 @@ class Cat{
 
           draw(frameCounter) {
             // Pintamos un cada frame del sprite en función del frameIndex
+            
+
+            
             this.ctx.drawImage(
                 this.img,
     
-                (this.img.width / this.img.frameCount) * this.frameIndex,
+                (this.img.width /this.img.frameCount) * this.img.frameIndex ,
                 0,
                 this.img.width / this.img.frameCount,
                 this.img.height,
@@ -45,25 +52,20 @@ class Cat{
             }
             animateSprite(frameCounter) {
                 if (frameCounter % 6 === 0) {
-                    this.frameIndex++
+                    this.img.frameIndex--
                 }
         
-                if (this.frameIndex >= this.img.frameCount) this.frameIndex = 0
+                if (this.img.frameIndex <= 0) this.img.frameIndex = this.img.frameCount - 1
             }
         
             
         
             move() {
-                this.gravity = 0.95
-                this.vy += this.gravity
-                this.y += this.vy
-        
-                if (this.y >= this.y0) {
-                    this.vy = 0
-                    this.y = this.y0
-                }
+             
             }
+
+            
         }
         
 
-export default Cat 
+export default Monkey
