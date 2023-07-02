@@ -25,9 +25,9 @@ class Player {
 		this.isStuned = false
 		this.isCollision = false
 		this.worldVelocity = undefined
-		// setTimeout(() => this.vx = -10, 10000)
+		setTimeout(() => this.vx = -10, 10000)
 		this.setControls()
-
+		this.passedObstacle= false
 		this.vx = 4
 	}
 
@@ -94,9 +94,12 @@ class Player {
 
 		if(this.isStuned && !this.worldVelocity) {
 			this.vx = 2
-		} else if(!this.isStuned && !this.worldVelocity) {
+		}  if(!this.isStuned && !this.worldVelocity) {
 			this.vx = 4
+		} else if (!this.passedObstacle && this.x > 0.08){
+			this.passedObstacle  = true
 		}
+
 
 
 		this.gravity = 0.95

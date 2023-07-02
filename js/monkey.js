@@ -6,7 +6,7 @@ class Monkey {
 		this.canvasW = canvasW
 		this.canvasH = canvasH
 
-		this.x = canvasW * 0.6
+		this.x = canvasW * 0.7      
 
 		this.y0 = canvasH * 0.6 
 		this.y = this.y0

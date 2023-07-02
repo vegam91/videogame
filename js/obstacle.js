@@ -1,14 +1,14 @@
 class obstacle{
-constructor(ctx, canvasW, canvasH, keys){
+constructor(ctx, canvasW, canvasH, spaceObstacle){
 
 
  this.ctx = ctx
-		this.keys = keys
+		
 
 		this.canvasW = canvasW
 		this.canvasH = canvasH
 
-		this.x = canvasW * 0.70
+		this.x = canvasW * 0.3    
 
 		this.y0 = canvasH * 0.8
 		this.y = this.y0
@@ -23,8 +23,9 @@ constructor(ctx, canvasW, canvasH, keys){
 
 		this.width = 110
 		this.height = 60
-
-
+   
+this.spaceObstacle=spaceObstacle
+        this.dx= -10  - (this.width + spaceObstacle)
 
       
 
@@ -61,8 +62,9 @@ constructor(ctx, canvasW, canvasH, keys){
             if (this.frameIndex >= this.img.frameCount) this.frameIndex = 0
         }
 
-        move(worldVelocity) {
-            this.x += worldVelocity
+        move() {
+            this.x += this.dx
+            
         }
 
 
