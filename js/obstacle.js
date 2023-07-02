@@ -1,14 +1,10 @@
-class obstacle{
-constructor(ctx, canvasW, canvasH, spaceObstacle){
-
-
- this.ctx = ctx
-		
-
+class Obstacle{
+    constructor(ctx, canvasW, canvasH, obstacleIndex){
+        this.ctx = ctx
 		this.canvasW = canvasW
 		this.canvasH = canvasH
 
-		this.x = canvasW * 0.3    
+		
 
 		this.y0 = canvasH * 0.8
 		this.y = this.y0
@@ -23,55 +19,48 @@ constructor(ctx, canvasW, canvasH, spaceObstacle){
 
 		this.width = 110
 		this.height = 60
+
+        // this.x = canvasW * 0.5 + obstacleIndex * (this.width + 200);
+        this.x = canvasW
+
+        // this.stopped = false
+        
+    }
    
-this.spaceObstacle=spaceObstacle
-        this.dx= -10  - (this.width + spaceObstacle)
+    draw(frameCounter) {
+        this.ctx.drawImage(
+            this.img,
+            (this.img.width / this.img.frameCount) * this.frameIndex,
+            0,
+            this.img.width / this.img.frameCount,
+            this.img.height,
 
-      
-
-
-
-
-}
-   
-             draw(frameCounter) {
-	
-            this.ctx.drawImage(
-                this.img,
+            this.x,
+            this.y,
+            this.width,
+            this.height
+        )
     
-                (this.img.width / this.img.frameCount) * this.frameIndex,
-                0,
-                this.img.width / this.img.frameCount,
-                this.img.height,
-    
-                this.x,
-                this.y,
-                this.width,
-                this.height
-            )
-    
-            this.animateSprite(frameCounter)
-        }
+        this.animateSprite(frameCounter)
+    }
     
         
-        animateSprite(frameCounter) {
-            if (frameCounter % 6 === 0) {
-                this.frameIndex++
-            }
-    
-            if (this.frameIndex >= this.img.frameCount) this.frameIndex = 0
+    animateSprite(frameCounter) {
+        if (frameCounter % 6 === 0) {
+            this.frameIndex++
         }
 
-        move() {
-            this.x += this.dx
-            
-        }
+        if (this.frameIndex >= this.img.frameCount) this.frameIndex = 0
+    }
 
-
-
-
+    move(worldVelocity) {
+        // if(!this.stopped){
+        this.x += worldVelocity;
+        
+        // }   
+    }
 }
 
 
 
-export default obstacle
+export default Obstacle

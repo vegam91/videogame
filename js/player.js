@@ -22,13 +22,13 @@ class Player {
 
 		this.width = 140
 		this.height = 140
-		this.isStuned = false
-		this.isCollision = false
-		this.worldVelocity = undefined
-		setTimeout(() => this.vx = -10, 10000)
+		// this.passedObstacle= false
+		// this.isStuned = false
+		// this.isCollision = false
+		// this.worldVelocity = undefined
+	
 		this.setControls()
-		this.passedObstacle= false
-		this.vx = 4
+	
 	}
 
 	setControls() {
@@ -92,13 +92,13 @@ class Player {
 
 	move() {
 
-		if(this.isStuned && !this.worldVelocity) {
-			this.vx = 2
-		}  if(!this.isStuned && !this.worldVelocity) {
-			this.vx = 4
-		} else if (!this.passedObstacle && this.x > 0.08){
-			this.passedObstacle  = true
-		}
+		// if(this.isStuned && !this.worldVelocity) {
+		// 	this.vx = 2
+		// }  if(!this.isStuned && !this.worldVelocity) {
+		// 	this.vx = 4
+		// } else if (!this.passedObstacle && this.x > 0.08){
+		// 	this.passedObstacle  = true
+		// }
 
 
 

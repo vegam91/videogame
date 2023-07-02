@@ -1,7 +1,7 @@
 import Background from "./background.js"
 import Player from "./player.js"
 import Monkey from './monkey.js'
-import obstacle from './obstacle.js'
+import Obstacle from './obstacle.js'
 const Game = {
     fps: 60,
     ctx: undefined,
@@ -20,26 +20,18 @@ const Game = {
         canvas.height = this.canvasH
     //    counter.init(this.ctx)
         document.body.append(canvas)
-       this.reset
+   
         this.start()
     },
     // Inicializa todos los objetos y variables que usa el juego
     reset: function () {
         this.player = new Player(this.ctx, this.canvasW, this.canvasH, this.keys)
         this.background = new Background(this.ctx, this.canvasW, this.canvasH)
-        this.monkey = new Monkey (this.ctx, this.canvasW, this.canvasH, this.keys)
-        // this.obstacle= new obstacle (this.ctx, this.canvasW, this.canvasH, this.keys)
-    //    this.obstacles=[]
-        // this.counter = 0
+        this.monkey = new Monkey (this.ctx, this.canvasW, this.canvasH, this.player.y0, this.player.height)
+        this.worldVelocity = -8
         this.frameCounter = 0
-        this.obstacles = [];
-        for (let i = 0; i < 3  ; i++) {
-            const obstacleInstance = new obstacle(this.ctx, this.canvasW, this.canvasH, this.keys);
-            obstacleInstance.x += i * (obstacleInstance.width + 200);
-            this.obstacles.push(obstacleInstance);
-        }
-            // ...
-          },
+        this.obstacles = []           
+    },
      
         // this.bso = new Audio('../assets/soundtrackgame.mp3')
         // this.bso.volume = 1
@@ -51,90 +43,93 @@ const Game = {
     start: function () {
         this.reset();
         this.intervalId = setInterval(() => {
-            // 60(this.fps) veces por segundo borro y pinto el canvas
+
             this.clearCanvas()
             this.frameCounter++
             this.score += 0.01
 
-            if(this.frameCounter > 300) {
-             
-                this.worldVelocity = -10
-                this.player.vx = 4
+            if (this.frameCounter < 150 && this.frameCounter % 50 === 0) this.generateObstacle()
+
+            if(this.frameCounter > 50 && this.obstacles.length === 0)  {
+                this.worldVelocity = 0
+                this.player.vx = 5
             }
-            // this.worldVelocity -= 0.001
-            // this.bso.playbackRate += 0.0001
+           
             this.drawAll()
             this.moveAll()
-            // if (this.frameCounter % 50 === 0) this.generateObstacle()
+            
             if (this.isCollision()){
-                 console.log("colision")
-                if(this.worldVelocity) {
+                this.worldVelocity = -4
 
-                    this.worldVelocity = -4
+                setTimeout(() => {
+                    this.worldVelocity = -7
+                }, 500)
 
-                    setTimeout(() => {
-                        this.worldVelocity = -7
-                    }, 500)
-                    this.player.stuned(this.worldVelocity)
-                } else {
-                    this.player.stuned(this.worldVelocity)
-
-                }
+                this.player.stuned(this.worldVelocity)
               
-               
+              
             } else {
                 this.player.isCollision = false
             }
 
-           if( this.isCollisionBanana()) 
-           console.log("colisio banan")
-          this.gameover();
-           
+           if( this.isCollisionBanana())  {
+            
+            this.gameover();
+           }
 
+          if(this.isCollisionMonkey()) {
+            this.win();
+           }
+           
+          
+           
+            this.clearObstacles()
         }, 1000 / this.fps)
     },
     drawAll(){
         this.background.draw();
-        this.player.draw(this.frameCounter);
+        
         this.obstacles.forEach(obstacleInstance => obstacleInstance.draw(this.frameCounter));
         
-    
-        if (this.player.passedObstacle) {
+        if (!this.worldVelocity) {
           this.monkey.draw(this.frameCounter);
         }
+
+        this.player.draw(this.frameCounter);
     },
-    
-      
-      
+          
     moveAll() {
-        if (!this.player.passedObstacle) {
-            this.background.move(this.worldVelocity);
-          }
-          this.player.move();
-        
+        // if (!this.player.passedObstacle) {
+    
+        //   }
+        this.background.move(this.worldVelocity);
+        this.player.move(this.worldVelocity);
+        this.obstacles.forEach(obstacleInstance => obstacleInstance.move(this.worldVelocity));
+
+        if (!this.worldVelocity) {
+            this.monkey.move(this.player.x + this.player.width)
+
+        }
        
 },
-   
-   
-    stop: function () {
-        this.reset()
-        clearInterval(this.intervalId)
+    
+    gameover() {
+        clearInterval(this.intervalId)    
+
+
+        if (confirm('Quieres jugar de nuevo')) {
+            this.start(); 
+        }
+
+        
     },
 
-     
-   
-    gameover() {
+    win () {
+        clearInterval(this.intervalId)    
 
-    
-            clearInterval(this.intervalId)
-            
-             if (confirm('Quieres jugar de nuevo')) {
-             this.start(); 
-            }else{
-                this.reset();
-            }
-
-   
+        if (confirm('Muy bien campeon, quieres jugar de nuevo?')) {
+            this.start(); 
+        }
     },
     isCollision()  { for (let i = 0; i < this.obstacles.length; i++) {
         const obstacle = this.obstacles[i];
@@ -151,38 +146,45 @@ const Game = {
      
     isCollisionBanana() {
 
-        if(!this.monkey.actions.shoot) return
+        if(!this.monkey.actions.shoot) return false
        
-     
+    
 
-        if(this.monkey.img.frameIndex < 3) {
-           
-            if(this.player.x + this.player.width > this.monkey.x &&
-            this.player.x < this.monkey.x + this.monkey.width / 6 &&
-            this.player.y + this.player.height > this.monkey.y + this.monkey.width / 3) {
+        if(this.monkey.img.frameIndex < 2) {
+            if(this.player.x + this.player.width > this.monkey.x + 30 &&
+            this.player.x < this.monkey.x + 30 &&
+            this.player.y + this.player.height > this.monkey.y + 150) {
                 return true
             } 
-
-
-        } else if (this.monkey.img.frameIndex < 5) {
-
-            if(this.player.x + this.player.width >  this.monkey.x + this.monkey.width/ 6  &&
-                this.player.x < this.monkey.x + this.monkey.width / 3 &&
-                this.player.y + this.player.height > this.monkey.y + 60) {
-                    return true
-                } 
-        }
-
+    
+        } 
         return false
     },
 
-   
+    isCollisionMonkey() {
+        if(!this.monkey.actions.shoot) return false
+       
     
-    // clearObstacles() {
-    //  this.obstacle = this.obstacle.filter(
-    //      (obstacle) => obstacle.x + obstacle.width > 0
-    //  )
-    // },
+        if(this.player.x + this.player.width > this.monkey.x + this.monkey.width - 166 &&
+        this.player.x < this.monkey.x + this.monkey.width) {
+            return true
+        
+        } 
+        
+        return false
+    },
+
+
+
+    generateObstacle() {
+        this.obstacles.push(new Obstacle(this.ctx, this.canvasW, this.canvasH))
+        
+    },
+   
+    clearObstacles() {
+        this.obstacles = this.obstacles.filter((obstacle) => obstacle.x + obstacle.width > 0) 
+    },
+
     clearCanvas() {
         this.ctx.clearRect(0, 0,this.canvasW, this.canvasH)
     },

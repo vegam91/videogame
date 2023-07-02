@@ -34,3 +34,4 @@ if(!this.stopped){
     }
 }
 export default Background
+
