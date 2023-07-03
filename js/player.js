@@ -22,10 +22,7 @@ class Player {
 
 		this.width = 140
 		this.height = 140
-		// this.passedObstacle= false
-		// this.isStuned = false
-		// this.isCollision = false
-		// this.worldVelocity = undefined
+		
 	
 		this.setControls()
 	

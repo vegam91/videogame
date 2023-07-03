@@ -30,12 +30,12 @@ const Game = {
         this.monkey = new Monkey (this.ctx, this.canvasW, this.canvasH, this.player.y0, this.player.height)
         this.worldVelocity = -8
         this.frameCounter = 0
-        this.obstacles = []           
+        this.obstacles = []     
+        this.bso = new Audio('../assets/soundtrackgame.mp3')
+        this.bso.volume = 1
+        this.bso.play()    
     },
      
-        // this.bso = new Audio('../assets/soundtrackgame.mp3')
-        // this.bso.volume = 1
-        // this.bso.play()
         // this.gameoverAudio = new Audio('../assets/sounds/gameover.mp3')
         // this.gameoverAudio.volume = 1
     
@@ -48,9 +48,9 @@ const Game = {
             this.frameCounter++
             this.score += 0.01
 
-            if (this.frameCounter < 150 && this.frameCounter % 50 === 0) this.generateObstacle()
+            if (this.frameCounter < 300 && this.frameCounter % 50 === 0) this.generateObstacle()
 
-            if(this.frameCounter > 50 && this.obstacles.length === 0)  {
+            if(this.frameCounter > 150 && this.obstacles.length === 0)  {
                 this.worldVelocity = 0
                 this.player.vx = 5
             }
@@ -116,8 +116,8 @@ const Game = {
     gameover() {
         clearInterval(this.intervalId)    
 
-
-        if (confirm('Quieres jugar de nuevo')) {
+this.bso.pause()
+        if (confirm('GAMEOVER¿Quieres jugar de nuevo')) {
             this.start(); 
         }
 
@@ -126,8 +126,8 @@ const Game = {
 
     win () {
         clearInterval(this.intervalId)    
-
-        if (confirm('Muy bien campeon, quieres jugar de nuevo?')) {
+this.bso.pause()
+        if (confirm('WIN ¿Quieres jugar de nuevo?')) {
             this.start(); 
         }
     },
